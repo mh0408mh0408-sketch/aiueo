@@ -152,8 +152,8 @@ window.dbAdapter = {
       if (roomData.status !== "LOBBY") {
         throw new Error("このゲームはすでに開始されています。ゲーム途中の新規参加はできません。");
       }
-      if (Object.keys(players).length >= 8) {
-        throw new Error("部屋が満員です（最大8人）。");
+      if (Object.keys(players).length >= 6) {
+        throw new Error("部屋が満員です（最大6人）。");
       }
     }
 
