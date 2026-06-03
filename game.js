@@ -753,7 +753,12 @@ function renderBattleScreen() {
       titleHtml += ` <span class="badge-me">(あなた)</span>`;
     }
 
-    let subHtml = `ライフ: ${totalLettersCount - hitLettersCount} / ${totalLettersCount}`;
+    let subHtml = "";
+    if (p.id === myPlayerId) {
+      subHtml = `ライフ: ${totalLettersCount - hitLettersCount} / ${totalLettersCount}`;
+    } else {
+      subHtml = p.isDefeated ? `<span style="color:var(--pop-pink-hover)">脱落</span>` : `<span style="color:var(--pop-green)">生存</span>`;
+    }
 
     let blocksHtml = "";
     p.letters.forEach((char, idx) => {
