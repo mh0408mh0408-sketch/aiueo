@@ -336,7 +336,6 @@ window.dbAdapter = {
       let newlyDefeated = [];
 
       for (let pid in room.players) {
-        if (pid === playerId) continue;
         const p = room.players[pid];
         if (p.isDefeated) continue;
 
@@ -395,6 +394,29 @@ window.dbAdapter = {
             text: `ゲーム終了！ 勝者は『${winnerName}』さんです！ 🎉`,
             time: Date.now()
           };
+        } else {
+          // 自爆脱落時のターン管理：自分が脱落した場合はターンを次に移す
+          if (room.players[playerId].isDefeated) {
+            room.combos = 0;
+            const currentIndex = room.playerOrder.indexOf(playerId);
+            let nextIndex = (currentIndex + 1) % room.playerOrder.length;
+            let nextPlayerId = room.playerOrder[nextIndex];
+
+            while (room.players[nextPlayerId].isDefeated && nextPlayerId !== playerId) {
+              nextIndex = (nextIndex + 1) % room.playerOrder.length;
+              nextPlayerId = room.playerOrder[nextIndex];
+            }
+
+            room.turnPlayerId = nextPlayerId;
+            const nextPlayerName = room.players[nextPlayerId].name;
+
+            const selfDefeatKey = "self_defeat_" + Date.now();
+            room.chat[selfDefeatKey] = {
+              sender: "システム",
+              text: `${attackerName}さんは自爆によって脱落したため、ターンが ${nextPlayerName} さんに移ります。`,
+              time: Date.now()
+            };
+          }
         }
       } else {
         room.combos = 0;
