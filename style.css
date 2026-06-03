@@ -1447,3 +1447,217 @@ h2 {
   transform: translate(2px, 2px);
   box-shadow: 1px 1px 0px var(--shadow-color);
 }
+
+/* MOBILE MEDIA QUERY FOR BEST PLAYABILITY */
+@media (max-width: 600px) {
+  .app-container {
+    padding: 8px;
+  }
+  
+  .app-header {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+  }
+
+  .logo .badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    margin-left: 4px;
+  }
+
+  .status-indicator {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+  }
+
+  .char-float {
+    font-size: 2.8rem;
+    width: 58px;
+    height: 58px;
+    line-height: 52px;
+    margin: 0 4px;
+  }
+
+  .welcome-card {
+    padding: 20px;
+    margin: 20px auto;
+  }
+
+  .lobby-main {
+    padding: 16px;
+    gap: 15px;
+  }
+
+  .lobby-header {
+    padding-bottom: 12px;
+    gap: 10px;
+  }
+
+  #room-code-display {
+    font-size: 1.2rem;
+  }
+
+  .theme-settings-box {
+    padding: 12px;
+  }
+
+  .theme-input-group {
+    margin-bottom: 10px;
+  }
+
+  .players-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+  }
+
+  .player-card {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .player-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .lobby-sidebar {
+    height: 400px;
+  }
+
+  .setup-container {
+    padding: 16px;
+    margin: 10px auto;
+    gap: 15px;
+  }
+
+  .theme-banner {
+    padding: 12px;
+  }
+
+  .theme-banner h2 {
+    font-size: 1.8rem;
+  }
+
+  .setup-instructions {
+    padding: 12px;
+  }
+
+  .card-block {
+    width: 36px;
+    height: 36px;
+    font-size: 1.15rem;
+    border-radius: 8px;
+    border-width: 2px;
+    box-shadow: 1.5px 1.5px 0px var(--shadow-color);
+  }
+
+  .preview-cards {
+    gap: 4px;
+  }
+
+  .battle-info-bar {
+    padding: 10px 15px;
+  }
+
+  .battle-info-bar .info-item .val {
+    font-size: 1rem;
+  }
+
+  .turn-announcement {
+    font-size: 1rem;
+  }
+
+  /* Preserve 10-columns keyboard on mobile with small keys */
+  .kana-keyboard-grid {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+  }
+
+  .key-btn {
+    font-size: 0.95rem;
+    border-radius: 6px;
+    border-width: 2px;
+    box-shadow: 1.5px 1.5px 0px var(--shadow-color);
+  }
+  
+  .key-btn:active:not(.disabled):not(:disabled) {
+    transform: translate(1px, 1px);
+    box-shadow: 0.5px 0.5px 0px var(--shadow-color);
+  }
+
+  .key-btn.hit {
+    box-shadow: 1.5px 1.5px 0px var(--shadow-color) !important;
+  }
+
+  /* Blocks in Player Cards: sizing to prevent wrapping */
+  .battle-block {
+    width: 32px;
+    height: 32px;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    border-width: 2px;
+    box-shadow: 1.5px 1.5px 0px var(--shadow-color);
+  }
+
+  .battle-blocks {
+    gap: 4px;
+  }
+
+  .battle-players-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .battle-player-card {
+    padding: 12px;
+  }
+
+  .keyboard-section {
+    padding: 12px;
+  }
+
+  .battle-log-panel {
+    height: 220px;
+  }
+
+  .battle-chat-panel {
+    height: 200px;
+  }
+
+  .gameover-card {
+    padding: 24px;
+    margin: 15px auto;
+  }
+
+  .trophy-icon {
+    font-size: 3.5rem;
+  }
+
+  #winner-announcement {
+    font-size: 1.8rem;
+  }
+
+  .revealed-words-section {
+    padding: 15px;
+    margin: 15px 0;
+  }
+
+  .revealed-word-row {
+    padding: 10px;
+  }
+
+  .revealed-word-row .word-display {
+    font-size: 1rem;
+  }
+
+  .btn-lg {
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+  }
+}
