@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<!-- あいうえバトル オンライン - 最新更新版 -->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    window.onerror = function(message, source, lineno, colno, error) {
+      alert("ブラウザエラーを検出しました！\n\nエラー内容: " + message + "\nファイル: " + source + "\n行番号: " + lineno);
+      return false;
+    };
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>あいうえバトル オンライン</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="あいうえバトルを友達とオンラインで遊ぼう！お題に沿った言葉を隠し持ち、相手の文字を当て合うリアルタイム言葉当てゲーム。">
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Background effects -->
+  <div class="bg-glow glow-1"></div>
+  <div class="bg-glow glow-2"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <h1 class="logo">あいうえ<span>バトル</span> <span class="badge">ONLINE</span></h1>
+      <div id="connection-status" class="status-indicator offline">
+        <span class="indicator-dot"></span>
+        <span class="status-text">未接続</span>
+      </div>
+    </header>
+
+    <main class="game-window">
+      <!-- SCREEN 1: Setup Firebase / Welcome -->
+      <section id="screen-welcome" class="game-screen active">
+        <div class="welcome-card glass-panel text-center">
+          <div class="game-icon">
+            <span class="char-float">あ</span>
+            <span class="char-float">い</span>
+            <span class="char-float">う</span>
+          </div>
+          <h2>あいうえバトルへようこそ！</h2>
+          <p class="subtitle">お題に沿った言葉をコッソリ決めて、相手の文字を1文字ずつ当て合う対戦ゲームです。</p>
+
+          <div class="input-group">
+            <label for="player-name-input"><i class="fa-solid fa-user"></i> あなたの名前</label>
+            <input type="text" id="player-name-input" maxlength="10" placeholder="プレイヤー名を入力してください" autocomplete="off">
+          </div>
+
+          <div class="input-group">
+            <label for="room-id-input"><i class="fa-solid fa-key"></i> 部屋の合言葉（パスワード）</label>
+            <input type="text" id="room-id-input" maxlength="10" placeholder="好きな合言葉を入力してください" autocomplete="off">
+            <span class="length-info" style="font-size: 0.8rem; margin-top: 4px; text-align: left;">
+              ※部屋を作る場合は、空欄にするとランダムで合言葉が自動生成されます。友達の部屋に入る場合は、教えてもらった合言葉を入力してください。
+            </span>
+          </div>
+
+          <div class="action-grid">
+            <button id="btn-create-room" class="btn btn-primary">
+              <i class="fa-solid fa-plus"></i> この合言葉で部屋を作る
+            </button>
+            <button id="btn-join-room" class="btn btn-secondary">
+              <i class="fa-solid fa-right-to-bracket"></i> この合言葉で部屋に入る
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: Lobby -->
+      <section id="screen-lobby" class="game-screen">
+        <div class="lobby-layout">
+          <!-- Main Lobby Panel -->
+          <div class="lobby-main glass-panel">
+            <div class="lobby-header">
+              <div class="room-code-container">
+                <span class="label">合言葉（部屋コード）</span>
+                <div class="code-box">
+                  <span id="room-code-display">----</span>
+                  <button id="btn-copy-code" class="btn-icon" title="コードをコピー">
+                    <i class="fa-solid fa-copy"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="lobby-status-text">
+                <i class="fa-solid fa-spinner fa-spin"></i> プレイヤーを待っています...
+              </div>
+            </div>
+
+            <!-- Theme Settings -->
+            <div class="theme-settings-box">
+              <h3><i class="fa-solid fa-tags"></i> お題（テーマ）設定</h3>
+              <div class="theme-input-group">
+                <input type="text" id="theme-input" placeholder="例: どうぶつ、たべもの、くに、など" maxlength="15" autocomplete="off">
+                <button id="btn-suggest-theme" class="btn btn-dark-outline btn-sm">
+                  <i class="fa-solid fa-dice"></i> おまかせ
+                </button>
+              </div>
+              <div class="theme-presets">
+                <span class="preset-tag">どうぶつ</span>
+                <span class="preset-tag">たべもの</span>
+                <span class="preset-tag">のみもの</span>
+                <span class="preset-tag">あかいもの</span>
+                <span class="preset-tag">おにぎりのぐ</span>
+                <span class="preset-tag">すぽーつ</span>
+                <span class="preset-tag">のりもの</span>
+                <span class="preset-tag">すきなきゃらくたー</span>
+              </div>
+            </div>
+
+            <!-- Player List -->
+            <div class="player-list-section">
+              <h3><i class="fa-solid fa-users"></i> 参加中のメンバー (<span id="player-count">0</span>人)</h3>
+              <div id="lobby-players-grid" class="players-grid">
+                <!-- Players will be rendered here dynamically -->
+              </div>
+            </div>
+
+            <!-- Start button -->
+            <div class="lobby-actions text-center">
+              <button id="btn-start-setup" class="btn btn-primary btn-lg btn-glow disabled" disabled>
+                <i class="fa-solid fa-play"></i> ゲーム開始（お題決定）
+              </button>
+              <p id="start-warning" class="warning-text">※ゲームを開始するには2人以上のプレイヤーが必要です。</p>
+            </div>
+          </div>
+
+          <!-- Chat panel -->
+          <div class="lobby-sidebar glass-panel">
+            <div class="chat-header">
+              <h3><i class="fa-solid fa-comments"></i> チャット & ログ</h3>
+            </div>
+            <div id="chat-messages" class="chat-messages-container">
+              <!-- Chat messages here -->
+            </div>
+            <div class="chat-input-box">
+              <input type="text" id="chat-input" placeholder="メッセージを入力..." autocomplete="off">
+              <button id="btn-send-chat" class="btn btn-icon-primary"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: Setup Word -->
+      <section id="screen-setup" class="game-screen">
+        <div class="setup-container glass-panel text-center">
+          <div class="theme-banner">
+            <span class="label">今回のお題</span>
+            <h2 id="setup-theme-display">----</h2>
+          </div>
+
+          <div class="setup-instructions">
+            <h3><i class="fa-solid fa-circle-info"></i> ルールに沿った言葉を決めよう</h3>
+            <ul>
+              <li>お題に沿った<strong>2文字以上7文字以下</strong>の言葉を入力してください。</li>
+              <li>濁点・半濁点は清音に変換されます（例：が→か、ぱ→は）。</li>
+              <li>小文字は大文字に変換されます（例：ゃ→や、っ→つ）。</li>
+              <li>ひらがな・カタカナのみ有効です（英数字や漢字は使えません）。</li>
+            </ul>
+          </div>
+
+          <div class="word-input-section">
+            <div class="input-group">
+              <input type="text" id="secret-word-input" maxlength="7" placeholder="ひらがな または カタカナ" autocomplete="off">
+            </div>
+
+            <!-- Visual feedback showing how the word will look in the game -->
+            <div class="word-preview-box">
+              <span class="preview-label">ゲーム内のカード表示:</span>
+              <div id="word-preview-cards" class="preview-cards">
+                <!-- 7 slots dynamically rendered -->
+              </div>
+              <span id="word-length-info" class="length-info">文字数: 0/7 (残り 7 個の ×)</span>
+            </div>
+
+            <button id="btn-submit-word" class="btn btn-primary btn-lg btn-glow disabled" disabled>
+              <i class="fa-solid fa-check"></i> この言葉で決定する
+            </button>
+          </div>
+
+          <div class="ready-status-box">
+            <h4>決定状況</h4>
+            <div id="setup-players-status" class="players-status-list">
+              <!-- Players and their ready status -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: Battle Area -->
+      <section id="screen-battle" class="game-screen">
+        <div class="battle-layout">
+          <!-- Left: Main Board & Cards -->
+          <div class="battle-main">
+            <!-- Theme & Info Bar -->
+            <div class="battle-info-bar glass-panel">
+              <div class="info-item">
+                <span class="label">お題</span>
+                <span id="battle-theme-display" class="val">----</span>
+              </div>
+              <div id="battle-turn-indicator" class="turn-announcement info-item flex-grow text-center">
+                <!-- Turn status text -->
+              </div>
+              <div class="info-item combo-display">
+                <span class="label">コンボ</span>
+                <span id="battle-combo-display" class="val">0</span>
+              </div>
+            </div>
+
+            <!-- Players' secret word cards -->
+            <div id="battle-players-grid" class="battle-players-grid">
+              <!-- Dynamic player cards -->
+            </div>
+
+            <!-- Japanese 50-on Keyboard Grid -->
+            <div class="keyboard-section glass-panel">
+              <div class="keyboard-header">
+                <h3>五十音ボード（攻撃する文字を選んでください）</h3>
+                <span id="keyboard-action-desc" class="desc">あなたの手番です。文字を選んで攻撃してください。</span>
+              </div>
+              <div id="kana-keyboard" class="kana-keyboard-grid">
+                <!-- 50 letters + ー button dynamically generated -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Sidebar for Chat and Game Logs -->
+          <div class="battle-sidebar">
+            <!-- Game History / Log -->
+            <div class="battle-log-panel glass-panel flex-grow">
+              <div class="panel-header">
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> バトル履歴</h3>
+              </div>
+              <div id="battle-logs-container" class="battle-logs-container">
+                <!-- "A: あ -> ミス", "B: い -> ヒット" etc. -->
+              </div>
+            </div>
+
+            <!-- Chat in game -->
+            <div class="battle-chat-panel glass-panel">
+              <div class="panel-header">
+                <h3><i class="fa-solid fa-comments"></i> チームチャット</h3>
+              </div>
+              <div id="battle-chat-messages" class="chat-messages-container small-chat">
+                <!-- Chat messages -->
+              </div>
+              <div class="chat-input-box">
+                <input type="text" id="battle-chat-input" placeholder="煽り・会話..." autocomplete="off">
+                <button id="btn-send-battle-chat" class="btn btn-icon-primary btn-sm"><i class="fa-solid fa-paper-plane"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 5: Game Over / Results -->
+      <section id="screen-gameover" class="game-screen">
+        <div class="gameover-card glass-panel text-center">
+          <div class="trophy-icon"><i class="fa-solid fa-trophy text-yellow"></i></div>
+          <h2 id="winner-announcement">〇〇の勝利！</h2>
+          <p class="subtitle">おめでとうございます！白熱の頭脳戦でした。</p>
+
+          <!-- Reveal words list -->
+          <div class="revealed-words-section">
+            <h3><i class="fa-solid fa-eye"></i> 全員の言葉の答え合わせ</h3>
+            <div id="gameover-words-list" class="gameover-words-list">
+              <!-- Render cards with original words and letters -->
+            </div>
+          </div>
+
+          <div class="gameover-actions">
+            <div class="gameover-actions-grid">
+              <button id="btn-rematch" class="btn btn-secondary btn-lg disabled" disabled>
+                <i class="fa-solid fa-gamepad"></i> 連戦する（同じお題で再戦）
+              </button>
+              <button id="btn-return-lobby" class="btn btn-primary btn-lg disabled" disabled>
+                <i class="fa-solid fa-arrow-rotate-left"></i> ロビーに戻る
+              </button>
+            </div>
+            <p id="return-warning" class="warning-text">※ホストのみが連戦の開始やロビーへ戻る操作を行えます。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Sound Toggle Control -->
+  <div class="sound-control-floating">
+    <button id="btn-toggle-sound" class="btn-sound" title="消音切替">
+      <i id="sound-icon" class="fa-solid fa-volume-high"></i>
+    </button>
+  </div>
+
+  <!-- Firebase Compat SDK from CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+  <!-- Game Scripts -->
+  <script src="config.js"></script>
+  <script src="firebase-db.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
